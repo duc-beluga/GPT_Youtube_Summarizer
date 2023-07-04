@@ -11,6 +11,7 @@ const Summarizer = () => {
         console.log(wordLimitRef.current.value)
         urlRef.current.value = '';
         wordLimitRef.current.value = '';
+
     }
     return (
         <div className="d-flex justify-content-center align-items-center pt-5">
