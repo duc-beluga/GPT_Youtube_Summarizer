@@ -17,21 +17,26 @@ namespace SkipClip.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> TranscribeAndSummarizeVideo([FromBody] string videoUrl)
+        public async Task<IActionResult> TranscribeAndSummarizeVideo([FromBody] TranscriptionRequest request)
         {
             // Step 1: Transcribe the video using Video Indexer
-            var transcriptionResult = await videoIndexerService.TranscribeVideo(videoUrl);
+            var transcriptionResult = await videoIndexerService.TranscribeVideo(request.videoUrl);
             if (transcriptionResult == null)
             {
                 return NotFound("Invalid URL");
             }
             // Step 2: Pass the transcription to the ChatGPT service for summarization
-            var summary = await chatGptService.GenerateSummary(transcriptionResult);
+            var summary = await chatGptService.GenerateSummary(transcriptionResult, request.wordLimits);
             if (summary == null)
             {
                 return StatusCode(500, "Cannot Summarize Content (Invalid API, Model,...)");
             }
             return Ok(summary);
+        }
+        public class TranscriptionRequest
+        {
+            public string videoUrl { get; set; }
+            public string wordLimits { get; set; }
         }
     }
 }

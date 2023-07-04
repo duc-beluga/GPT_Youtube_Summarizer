@@ -1,14 +1,29 @@
 import React, { Component, useRef } from 'react';
+import axios from 'axios';
 
 const Summarizer = () => {
 
     const urlRef = useRef();
     const wordLimitRef = useRef();
 
-    const summarize = (e) => {
+    const summarize = async (e) => {
         e.preventDefault();
         console.log(urlRef.current.value)
         console.log(wordLimitRef.current.value)
+        
+
+        const transcriptionRequest = {
+            videoUrl: urlRef.current.value,
+            wordLimits: wordLimitRef.current.value
+        }
+
+        try {
+            const response = await axios.post('https://localhost:44450/api/transcribe-summarize', transcriptionRequest);
+            console.log(response.data);
+        } catch (error) {
+            console.error(error);
+        }
+
         urlRef.current.value = '';
         wordLimitRef.current.value = '';
 
