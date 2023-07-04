@@ -1,36 +1,35 @@
-﻿using System.Net.Http.Headers;
-using Microsoft.AspNetCore.Mvc;
+﻿using OpenAI_API.Completions;
 using OpenAI_API;
-using OpenAI_API.Completions;
+using System.Net.Http.Headers;
 
-
-namespace SkipClip.Controllers
+namespace SkipClip.Services
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class ChatGptController : ControllerBase
+    public class ChatGptService : IChatGptService
     {
         private readonly HttpClient _httpClient;
         private readonly string _apiKey;
 
-        public ChatGptController(IConfiguration config)
+        public ChatGptService(IConfiguration config)
         {
             _apiKey = config.GetValue<string>("ChatGpt:OpenAIKey") ?? string.Empty; ;
             _httpClient = new HttpClient();
             _httpClient.BaseAddress = new Uri("https://api.openai.com/v1/");
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _apiKey);
         }
-
-        [HttpPost("SendPrompt")]
-        public async Task<IActionResult> SendPrompt([FromBody] string msg)
+        public async Task<string> GenerateSummary(string transcript)
         {
             var openAI = new OpenAIAPI(_apiKey);
             CompletionRequest completionRequest = new CompletionRequest();
-            completionRequest.Prompt = "Summarize this transcript: " + msg;
-            completionRequest.Model = OpenAI_API.Models.Model.AdaText;
+            completionRequest.Prompt = "Summarize this transcript: " + transcript;
+            completionRequest.Model = OpenAI_API.Models.Model.DavinciText;
+            completionRequest.MaxTokens = 100;
             var completions = await openAI.Completions.CreateCompletionAsync(completionRequest);
-
-            return Ok(completions.Completions);
+            var content = completions.Completions.ToString();
+            if (content != null)
+            {
+                return content;
+            }
+            return "No Content";
         }
     }
 }
