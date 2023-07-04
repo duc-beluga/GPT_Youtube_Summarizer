@@ -16,11 +16,11 @@ namespace SkipClip.Services
             _httpClient.BaseAddress = new Uri("https://api.openai.com/v1/");
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _apiKey);
         }
-        public async Task<string> GenerateSummary(string transcript)
+        public async Task<string> GenerateSummary(string transcript, string wordLimits)
         {
             var openAI = new OpenAIAPI(_apiKey);
             CompletionRequest completionRequest = new CompletionRequest();
-            completionRequest.Prompt = "Summarize this transcript: " + transcript;
+            completionRequest.Prompt = "Summarize this transcript in " + wordLimits + " words: " + transcript;
             completionRequest.Model = OpenAI_API.Models.Model.DavinciText;
             completionRequest.MaxTokens = 100;
             var completions = await openAI.Completions.CreateCompletionAsync(completionRequest);

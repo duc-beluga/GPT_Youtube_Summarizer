@@ -1,8 +1,12 @@
+using SkipClip.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllersWithViews();
+builder.Services.AddScoped<IVideoIndexerService, VideoIndexerService>();
+builder.Services.AddScoped<IChatGptService, ChatGptService>(); 
 
 var app = builder.Build();
 

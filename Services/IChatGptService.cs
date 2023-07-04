@@ -2,6 +2,6 @@
 {
     public interface IChatGptService
     {
-        Task<string> GenerateSummary(string transcript);
+        Task<string> GenerateSummary(string transcript, string wordLimits);
     }
 }
